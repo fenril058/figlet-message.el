@@ -1,2 +1,43 @@
-# figlet-message.el
- insert large ASCII art text into your buffer using the `figlet` command.
+* figlet-message
+
+`figlet-message` is an Emacs package that allows you to insert large ASCII art text into your buffer using the `figlet` command.
+
+** Installation
+
+1. Ensure you have `figlet` installed on your system. You can install it using your package manager. For example, on Debian-based systems, you can use:
+   #+begin_src sh
+   sudo apt-get install figlet
+   #+end_src
+
+2. Place the `figlet-message.el` file in your Emacs load path.
+
+3. Add the following line to your Emacs configuration file (`.emacs` or `init.el`):
+   #+begin_src elisp
+   (require 'figlet-message)
+   #+end_src
+
+** Configuration
+
+*** Customization Options
+
+- `fig-options`: Command-line options for `figlet`. Default is `"-c"`.
+- `fig-font-locations`: List of directories where `figlet` fonts are located. Default is `("/usr/share/figlet")`.
+
+You can customize these options using Emacs' customization interface or by setting them in your configuration file. For example:
+#+begin_src elisp
+(setq fig-options "-c -k")
+(setq fig-font-locations '("/usr/share/figlet" "/path/to/other/fonts"))
+#+end_src
+
+** Usage
+
+To insert a large ASCII art message into your current buffer, use the `figlet-message` command:
+#+begin_src elisp
+M-x figlet-message
+#+end_src
+
+You will be prompted to enter the message and select a font from the available `figlet` fonts.
+
+** License
+
+See the LICENSE file for details.

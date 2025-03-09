@@ -34,11 +34,20 @@
 
 ;;; Code:
 
+(defgroup figlet nil
+  "Insert large characters made up of ordinary screen characters in your buffer."
+  :prefix "fig-"
+  :group 'convenience)
+
 (defcustom fig-options "-c"
-  "figlet command options")
+  "figlet command options"
+  :group 'figlet
+  :type 'string)
 
 (defcustom fig-font-locations '("/usr/share/figlet")
-  "replace this with \"figlet -I2\" to get the default font dir")
+  "replace this with \"figlet -I2\" to get the default font dir"
+  :group 'figlet
+  :type '(repeat string))
 
 (defun fig-collapse-lists (da-list)
   (cond ((stringp da-list) (list da-list))
@@ -49,29 +58,27 @@
 (defun fig-generate-figlet-font-list (loc-list)
   "Generate a list of figlet fonts."
   (mapcar
-   '(lambda (element)
-      (cons element nil))
+   #'(lambda (element)
+       (cons element nil))
    (mapcar
-    '(lambda (one-file)
-       (let ((point (string-match ".flf" one-file)))
-         (substring one-file 0 point)))
+    #'(lambda (one-file)
+        (let ((point (string-match ".flf" one-file)))
+          (substring one-file 0 point)))
     (fig-collapse-lists
      (mapcar
-      '(lambda (dir-string)
-         (directory-files (expand-file-name dir-string)
-                          nil ".*\.flf"))
+      #'(lambda (dir-string)
+          (directory-files (expand-file-name dir-string)
+                           nil ".*\\.flf"))
       loc-list)))))
-
-(defvar fig-font-list (fig-generate-figlet-font-list fig-font-locations))
 
 ;;;###autoload
 (defun figlet-message ()
   "Inserts large message of text in ASCII font into current buffer"
   (interactive)
-  (setq str (read-from-minibuffer "Enter message: "))
-  (setq font
-        (completing-read "Which font: " fig-font-list nil t))
-  (call-process "figlet" nil t t "-f" font fig-options str)
+  (let ((str (read-from-minibuffer "Enter message: "))
+        (font (completing-read "Which font: "
+                               (fig-generate-figlet-font-list fig-font-locations) nil t)))
+    (call-process "figlet" nil t t "-f" font fig-options str))
   (message "Done printing"))
 
 (provide 'figlet-message)
